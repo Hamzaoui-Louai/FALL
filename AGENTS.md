@@ -45,6 +45,8 @@
   `PlayerBehaviour` is input-agnostic.
 - **No abbreviations in variable or parameter names:** Write `keyboard`, not
   `kb`. Write `behaviour`, not `bhv`. Readability over brevity.
+- **Do not multiply by `Time.fixedDeltaTime` inside `FixedUpdate`.** The time
+  step is already constant — the multiplication is redundant.
 
 ## Other instruction sources
 

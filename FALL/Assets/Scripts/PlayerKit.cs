@@ -18,9 +18,7 @@ public class PlayerKit : MonoBehaviour
     KitType currentKit = KitType.NoKit;
     float timer;
 
-    public KitType CurrentKit => currentKit;
-    public float Timer => timer;
-    public bool IsActive => currentKit != KitType.NoKit;
+    public KitType GetKit() => currentKit;
 
     public void ApplyKit(KitType kit, float duration)
     {
@@ -30,7 +28,7 @@ public class PlayerKit : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!IsActive) return;
+        if (currentKit == KitType.NoKit) return;
         timer -= Time.fixedDeltaTime;
         if (timer <= 0f)
         {
