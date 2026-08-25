@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum KitType
 {
-    NoKit,
+    No_kit,
     Fragile,
     Ice,
     Invincible,
@@ -15,7 +15,7 @@ public enum KitType
 
 public class PlayerKit : MonoBehaviour
 {
-    KitType currentKit = KitType.NoKit;
+    KitType currentKit = KitType.No_kit;
     float timer;
 
     public KitType GetKit() => currentKit;
@@ -28,12 +28,12 @@ public class PlayerKit : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (currentKit == KitType.NoKit) return;
+        if (currentKit == KitType.No_kit) return;
         timer -= Time.fixedDeltaTime;
         if (timer <= 0f)
         {
             timer = 0f;
-            currentKit = KitType.NoKit;
+            currentKit = KitType.No_kit;
         }
     }
 }

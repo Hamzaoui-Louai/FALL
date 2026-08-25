@@ -4,8 +4,8 @@ public enum PlayerDirection { None, Left, Right }
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    const float MaxBallRotationSpeed = 180f;
-    const float BallRotationAcceleration = 360f;
+    const float MaxBallRotationSpeed = 16f; //16 means the ball rotates a full rotation once every second.
+    const float BallRotationAcceleration = 1f;
 
     float ballRotationSpeed;
     PlayerDirection direction = PlayerDirection.None;
@@ -29,5 +29,7 @@ public class PlayerBehaviour : MonoBehaviour
             ballRotationSpeed = Mathf.Max(ballRotationSpeed - BallRotationAcceleration, 0f);
         else
             ballRotationSpeed = Mathf.Min(ballRotationSpeed + BallRotationAcceleration, 0f);
+
+        Debug.Log($"Ball speed: {ballRotationSpeed}");
     }
 }
