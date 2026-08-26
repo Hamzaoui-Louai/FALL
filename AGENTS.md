@@ -5,7 +5,7 @@
 - Git repo root is `unity files/`, but the actual Unity project lives in `FALL/`. All Unity paths and commands belong under `FALL/`, not the repo root.
 - Pinned Unity version: **6000.3.22f1** (`FALL/ProjectSettings/ProjectVersion.txt`). Do not open or upgrade with a different version.
 - URP **2D** setup: `Assets/Settings/Renderer2D.asset` + `UniversalRP.asset`; only scene is `Assets/Scenes/SampleScene.unity`.
-- `Assets/Scripts/` contains the player core: `KitType.cs`, `PlayerKit.cs`, `PlayerBehaviour.cs`, `PlayerAnimation.cs`, `PlayerControl.cs`.
+- `Assets/Scripts/` contains the player core: `PlayerKit.cs` (includes `KitType` enum), `PlayerBehaviour.cs`, `PlayerAnimation.cs`, `PlayerControl.cs`.
 - Player art lives in `Assets/Objects/Player/`: `Player.png`, one Animator controller `Player_0.controller`, and per-powerup clips named `<Powerup>_kit.anim` (Fragile, Ice, Invincible, Shooter, Slime, Slowfalling, Speed, Time). Follow that naming pattern for new powerup clips.
 - Input System package is installed; actions asset is `Assets/Settings/InputSystem_Actions.inputactions`.
 
@@ -33,8 +33,8 @@
     `PlayerBehaviour`. Never touches animation or kit.
   - `PlayerBehaviour` — Physics + state holder. Owns kit, exposes direction/speed
     for animation, applies rotation in FixedUpdate.
-  - `PlayerKit` — Pure state class. Holds kit type + countdown timer. Not a
-    MonoBehaviour.
+  - `PlayerKit` — Kit state + countdown timer. MonoBehaviour with its own
+    FixedUpdate for timer. Exposes `GetKit()` and `ApplyKit()` only.
   - `PlayerAnimation` — Animator driver. Reads behaviour state + kit in
     FixedUpdate, sets Animator speed and state. Does not set kit.
 - **Intent-revealing names:** `RotateRight()`, `ApplyKit()`, `Tick()` — not
@@ -47,7 +47,13 @@
   `kb`. Write `behaviour`, not `bhv`. Readability over brevity.
 - **Do not multiply by `Time.fixedDeltaTime` inside `FixedUpdate`.** The time
   step is already constant — the multiplication is redundant.
+- **Animator.speed cannot be negative at runtime.** Only works in recorder
+  mode. For reverse animation, duplicate states with `-1` speed in the
+  Inspector or use `animator.Play(stateName, 0, normalizedTime)`.
+- **Animation clips use `_left`/`_right` suffixes** (e.g. `No_kit_left`,
+  `No_kit_right`). State names must match exactly when calling
+  `animator.Play()`.
 
 ## Other instruction sources
 
-- Repo-local skills live in `.opencode/skills/` (`unity-developer` is the relevant one for Unity work).
+- The `unity-developer` skill in the built-in OpenCode config covers Unity workflows.

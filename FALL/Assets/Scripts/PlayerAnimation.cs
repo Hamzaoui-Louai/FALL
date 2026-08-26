@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerBehaviour))]
 public class PlayerAnimation : MonoBehaviour
 {
-    const float AnimationSpeedToBallSpeedRatio = 1f;
+    const float AnimationSpeedToBallSpeedRatio = 16f; // the ball has a circumference of 16 units, so the animation speed should be 16 times the ball rotation speed
 
     Animator animator;
     PlayerBehaviour behaviour;
