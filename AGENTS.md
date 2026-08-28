@@ -4,7 +4,7 @@
 - Git repo root is `unity files/`; Unity project lives in `FALL/`. Run all Unity paths/ commands under `FALL/`, not repo root.
 - Pinned Unity version: `6000.3.22f1` (`FALL/ProjectSettings/ProjectVersion.txt`). Do not open with a different version.
 - URP 2D setup: `Assets/Settings/Renderer2D.asset` + `UniversalRP.asset`; only scene is `Assets/Scenes/SampleScene.unity`.
-- `Assets/Scripts/Player/` — `PlayerKit.cs` (`KitType` enum), `PlayerBehaviour.cs`, `PlayerControl.cs`, `PlayerAnimation.cs`.
+- `Assets/Scripts/Player/` — `PlayerKit.cs` (`KitType` enum), `PlayerBehaviour.cs`, `PlayerControl.cs`, `PlayerAnimation.cs`, `PlayerLifecycle.cs` (exposes `KillPlayer()`/`OffscreenPlayer()`).
 - `Assets/Scripts/Level Environment/` — `Offscreener.cs` (rising kill-chaser, working), `CameraBehaviour.cs` (Y-follow clamped by upper/lower limits), `KitAnimator.cs` (plays a per-object serialized Animator state when the tagged `Player` triggers it).
 - Player art: `Assets/Objects/Player/` has only `No_kit_left.anim` / `No_kit_right.anim` + `Player_0.controller`. New powerup clips follow `<Powerup>_kit.anim`. Level art: `Assets/Objects/Level Environment/checkpoint.png`, `spikes.png`.
 - Input System 1.20.0 installed; actions asset: `Assets/Settings/InputSystem_Actions.inputactions`.

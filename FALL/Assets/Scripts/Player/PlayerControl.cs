@@ -5,11 +5,18 @@ using UnityEngine.InputSystem;
 public class PlayerControl : MonoBehaviour
 {
     PlayerBehaviour behaviour;
+    PlayerLifecycle lifecycle;
 
-    void Awake() => behaviour = GetComponent<PlayerBehaviour>();
+    void Awake()
+    {
+        behaviour = GetComponent<PlayerBehaviour>();
+        lifecycle = GetComponent<PlayerLifecycle>();
+    }
 
     void Update()
     {
+        if (lifecycle.IsDead()) return;
+
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 

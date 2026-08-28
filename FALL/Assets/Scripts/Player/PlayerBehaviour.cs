@@ -20,6 +20,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     public PlayerDirection GetDirection() => direction;
     public float GetBallRotationSpeed() => ballRotationSpeed;
+    public Vector2 GetPosition() => transform.position;
+    public void SetGravity(float newGravity) => rb.gravityScale = newGravity;
 
     public void RotateRight() => direction = PlayerDirection.Right;
     public void RotateLeft() => direction = PlayerDirection.Left;
