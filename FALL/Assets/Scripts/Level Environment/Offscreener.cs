@@ -70,7 +70,7 @@ public class Offscreener : MonoBehaviour
 
     bool ReachedPlayer()
     {
-        const float OffscreenerOffset = 7.5f;
+        const float OffscreenerOffset = 7.4f;
         return (playerTransform.position.y >= transform.position.y + OffscreenerOffset);
     }
 }

@@ -41,13 +41,10 @@ public class PlayerBehaviour : MonoBehaviour
         else
             ballRotationSpeed = Mathf.Min(ballRotationSpeed + BallRotationAcceleration, 0f);
 
-        Debug.Log($"Ball speed: {ballRotationSpeed}");
-
         //ball movement logic
         ballMovementAcceleration = -(ballMovementSpeed - ballRotationSpeed) * grip;
         ballMovementSpeed += ballMovementAcceleration;
         rb.linearVelocity = new Vector2(ballMovementSpeed * BallMovementSpeedToVelocityRatio, rb.linearVelocity.y);
 
-        Debug.Log($"Movement speed: {ballMovementSpeed}, Acceleration: {ballMovementAcceleration}");
     }
 }
