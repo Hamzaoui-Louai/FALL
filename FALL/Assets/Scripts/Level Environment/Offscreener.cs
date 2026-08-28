@@ -59,7 +59,7 @@ public class Offscreener : MonoBehaviour
     {
         if(ReachedPlayer())
         {
-            //game over
+            playerTransform.GetComponent<PlayerLifecycle>().OffscreenPlayer();
         }
         else
         {

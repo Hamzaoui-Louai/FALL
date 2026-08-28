@@ -21,7 +21,13 @@ public class PlayerBehaviour : MonoBehaviour
     public PlayerDirection GetDirection() => direction;
     public float GetBallRotationSpeed() => ballRotationSpeed;
     public Vector2 GetPosition() => transform.position;
-    public void SetGravity(float newGravity) => rb.gravityScale = newGravity;
+    public void SetPosition(Vector2 newPosition) => transform.position = newPosition;
+    public void SetGravity(float newGravity)
+    {
+        rb.gravityScale = newGravity;
+        if (newGravity == 0f)
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+    }
 
     public void RotateRight() => direction = PlayerDirection.Right;
     public void RotateLeft() => direction = PlayerDirection.Left;

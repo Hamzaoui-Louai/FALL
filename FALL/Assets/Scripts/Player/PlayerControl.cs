@@ -15,10 +15,16 @@ public class PlayerControl : MonoBehaviour
 
     void Update()
     {
-        if (lifecycle.IsDead()) return;
-
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
+
+        if (lifecycle.IsOffscreened() && keyboard.anyKey.wasPressedThisFrame)
+        {
+            lifecycle.Respawn();
+            return;
+        }
+
+        if (lifecycle.IsDead()) return;
 
         bool right = keyboard.rightArrowKey.isPressed;
         bool left = keyboard.leftArrowKey.isPressed;
