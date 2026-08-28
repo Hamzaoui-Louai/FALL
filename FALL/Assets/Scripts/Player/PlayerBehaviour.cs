@@ -6,7 +6,7 @@ public class PlayerBehaviour : MonoBehaviour
 {
     const float MaxBallRotationSpeed = 1f; 
     const float BallRotationAcceleration = 0.1f; // the ball takes 10 frames to reach max speed, which is 1/6 of a second at 60fps. 
-    [SerializeField] const float BallMovementSpeedToVelocityRatio = 8f;
+    const float BallMovementSpeedToVelocityRatio = 8f;
 
     float ballRotationSpeed = 0f;
     float ballMovementSpeed = 0f;

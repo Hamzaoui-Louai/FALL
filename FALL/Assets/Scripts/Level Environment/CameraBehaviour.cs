@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Transform))]
@@ -23,11 +22,5 @@ public class CameraBehaviour : MonoBehaviour
     void StandardBehaviour()
     {
         transform.position = new Vector3(0,(playerTransform.position.y >= upperLimit)? upperLimit : (playerTransform.position.y < lowerLimit) ? lowerLimit : playerTransform.position.y, -10);
-    }
-
-    private void FixedUpdate()
-    {
-        //Debug.Log(playerTransform.position.y);
-        //Debug.Log((transform.position.y > upperLimit) ? upperLimit : (transform.position.y < lowerLimit) ? lowerLimit : playerTransform.position.y);
     }
 }

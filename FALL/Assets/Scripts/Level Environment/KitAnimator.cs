@@ -1,14 +1,17 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class KitAnimator : MonoBehaviour
 {
-    void Start()
-    {
-        
-    }
+    [SerializeField] string animationStateName;
 
-    void Update()
+    Animator animator;
+
+    void Awake() => animator = GetComponent<Animator>();
+
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        if (collision.collider.CompareTag("Player"))
+            animator.Play(animationStateName);
     }
 }
