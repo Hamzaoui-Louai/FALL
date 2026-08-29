@@ -4,9 +4,9 @@
 - Git repo root is `unity files/`; Unity project lives in `FALL/`. Run all Unity paths/ commands under `FALL/`, not repo root.
 - Pinned Unity version: `6000.3.22f1` (`FALL/ProjectSettings/ProjectVersion.txt`). Do not open with a different version.
 - URP 2D setup: `Assets/Settings/Renderer2D.asset` + `UniversalRP.asset`; only scene is `Assets/Scenes/SampleScene.unity`.
-- `Assets/Scripts/Player/` — `PlayerKit.cs` (`KitType` enum), `PlayerBehaviour.cs`, `PlayerControl.cs`, `PlayerAnimation.cs`, `PlayerLifecycle.cs` (exposes `KillPlayer()`/`OffscreenPlayer()`).
-- `Assets/Scripts/Level Environment/` — `Offscreener.cs` (rising kill-chaser, working), `CameraBehaviour.cs` (Y-follow clamped by upper/lower limits), `KitAnimator.cs` (plays a per-object serialized Animator state when the tagged `Player` triggers it).
-- Player art: `Assets/Objects/Player/` has only `No_kit_left.anim` / `No_kit_right.anim` + `Player_0.controller`. New powerup clips follow `<Powerup>_kit.anim`. Level art: `Assets/Objects/Level Environment/checkpoint.png`, `spikes.png`.
+- `Assets/Scripts/Player/` — `PlayerKit.cs` (`KitType` enum), `PlayerBehaviour.cs`, `PlayerControl.cs`, `PlayerAnimation.cs`, `PlayerLifecycle.cs` (death/respawn/checkpoint; exposes `KillPlayer()`, `OffscreenPlayer()`, `Respawn()`, `SetCheckpoint()`, `IsDead()`, `IsOffscreened()`).
+- `Assets/Scripts/Level Environment/` — `Offscreener.cs` (rising kill-chaser; public `PauseOffscreener(int)`, `SetOffscreenerSpeed(float)`, `SetOffScreenerYPosition(float)` used for death/respawn), `CameraBehaviour.cs` (Y-follow clamped by upper/lower limits), `KitAnimator.cs` (plays a per-object serialized Animator state when the tagged `Player` triggers it), `KillPlayerOnCollision.cs` (kills the tagged `Player` on collision — used for spikes).
+- Player art: `Assets/Objects/Player/` has `No_kit_left.anim` / `No_kit_right.anim`, `Player_0.controller`, plus `Game Over Canvas.prefab` / `Player.png`. New powerup clips follow `<Powerup>_kit.anim`. Level art: `Assets/Objects/Level Environment/` — pixel tiles/spikes/checkpoint (`checkpoint_1.controller` + `Checkpoint.anim`/`Checkpoint_active.anim`), `Offscreener.png`, `left/right slide.png`, `tile.png`.
 - Input System 1.20.0 installed; actions asset: `Assets/Settings/InputSystem_Actions.inputactions`.
 
 ## Git state
@@ -22,17 +22,18 @@
 ## Code conventions
 - Public functions set state; logic runs in `FixedUpdate`/`Update`. Multi-value setters (e.g. `RotateRight()` sets direction, movement accelerates in `FixedUpdate`) live in the frame loop.
 - Single responsibility per script:
-  - `PlayerControl` — Input proxy. Reads `Keyboard.current`, calls 3 commands on `PlayerBehaviour`. Never touches animation or kit.
+  - `PlayerControl` — Input proxy. Reads `Keyboard.current`, calls commands on `PlayerBehaviour` (movement) and `PlayerLifecycle` (respawn when offscreened). Never touches animation or kit.
   - `PlayerBehaviour` — Physics + state holder. Owns direction, rotation speed, ball movement; applies velocity in `FixedUpdate`. Input-agnostic.
   - `PlayerKit` — Kit state + countdown timer. NOTE timer ticks in its own `FixedUpdate` (via `Time.fixedDeltaTime`), not `Update`. Exposes `GetKit()`/`ApplyKit()` only.
   - `PlayerAnimation` — Animator driver. Reads behaviour state + kit each `FixedUpdate`, sets `animator.speed` and plays a state. Does not set kit.
-- `PlayerControl.Awake` grabs `PlayerBehaviour` and `Update` polls `Keyboard.current` directly — the `.inputactions` asset is NOT wired (stock template bindings; no code instantiates or consumes it). An agent wiring InputActions must also rewrite `PlayerControl.Update`.
+- `PlayerControl.Awake` grabs `PlayerBehaviour` + `PlayerLifecycle`; `Update` polls `Keyboard.current` directly — the `.inputactions` asset is NOT wired (stock template bindings; no code instantiates or consumes it). An agent wiring InputActions must also rewrite `PlayerControl.Update`.
+- Respawn is driven from input, not the death scripts: in `PlayerControl.Update`, an offscreened player respawns on `keyboard.anyKey.wasPressedThisFrame`; when dead (spikes) input is blocked until `Respawn()` clears it. Keep this input-side respawn flow, not a death-script-initiated one.
 - `PlayerAnimation.FixedUpdate` builds the state name as `$"No_kit_{directionSuffix}"` (Left→`left`, anything else→`right`); new `KitType` entries need matching state names and explicit mapping (player has no kit logic yet).
 - Enums for state: `PlayerDirection`, `KitType` instead of magic strings/ints.
 - `PlayerBehaviour` uses `rb.linearVelocity` (Unity 6 renamed `Rigidbody2D.velocity`).
-- `Offscreener`/`CameraBehaviour` resolve the player via `GameObject.Find("Player")` — the GameObject must stay named exactly `Player`; no inspector reference.
+- `Offscreener`/`CameraBehaviour` resolve the player via `GameObject.Find("Player")` — the GameObject must stay named exactly `Player`; no inspector reference. `PlayerLifecycle` also resolves the offscreener via `GameObject.Find("Offscreener")`, so that GameObject must stay named exactly `Offscreener`.
 - No abbreviations in variable/parameter names: `keyboard`, not `kb`; `behaviour`, not `bhv`.
-- Avoid `Debug.Log` in `FixedUpdate` (perf); none remain in shipped code (`PlayerBehaviour`/`CameraBehaviour` are clean). Keep it that way.
+- Avoid `Debug.Log` in `FixedUpdate` (perf); none remain in shipped code (the whole `Assets/Scripts/` is `Debug.Log`-free). Keep it that way.
 - `Animator.speed` cannot be negative at runtime (recorder-mode only). For reverse animation duplicate states with `-1` speed in the Inspector or use `animator.Play(stateName, 0, normalizedTime)`.
 - Animation clips use `_left`/`_right` suffixes (e.g. `No_kit_left`). State names must match exactly when calling `animator.Play()`.
 

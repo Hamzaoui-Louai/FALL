@@ -47,6 +47,7 @@ public class PlayerLifecycle : MonoBehaviour
     public void KillPlayer()
     {
         isDead = true;
+        behaviour.Stop();
         behaviour.SetGravity(0f);
         offscreener.SetOffScreenerYPosition(behaviour.GetPosition().y + OffscreenerOffset);
     }
