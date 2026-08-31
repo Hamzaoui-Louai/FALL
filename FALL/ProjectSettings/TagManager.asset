@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Checkpoint
   - Harmful
+  - Speed
+  - Slowfalling
+  - Ice
   layers:
   - Default
   - TransparentFX

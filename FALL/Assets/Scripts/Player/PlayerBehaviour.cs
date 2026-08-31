@@ -15,8 +15,13 @@ public class PlayerBehaviour : MonoBehaviour
     PlayerDirection direction = PlayerDirection.None;
 
     Rigidbody2D rb;
+    PlayerKit kit;
 
-    void Awake() => rb = GetComponent<Rigidbody2D>();
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        kit = GetComponent<PlayerKit>();
+    }
 
     public PlayerDirection GetDirection() => direction;
     public float GetBallRotationSpeed() => ballRotationSpeed;
@@ -38,16 +43,19 @@ public class PlayerBehaviour : MonoBehaviour
 
         //ball rotation speed logic 
 
+        float maxBallRotationSpeed = kit.GetKit() == KitType.Speed ? MaxBallRotationSpeed * 2f : MaxBallRotationSpeed;
+        float ballRotationAcceleration = kit.GetKit() == KitType.Speed ? BallRotationAcceleration * 2f : BallRotationAcceleration;
+
         // Accelerates or decelerates ballRotationSpeed toward the direction's
         // target (+max / -max / 0), clamped so it never overshoots.
         if (direction == PlayerDirection.Right)
-            ballRotationSpeed = Mathf.Min(ballRotationSpeed + BallRotationAcceleration, MaxBallRotationSpeed);
+            ballRotationSpeed = Mathf.Min(ballRotationSpeed + ballRotationAcceleration, maxBallRotationSpeed);
         else if (direction == PlayerDirection.Left)
-            ballRotationSpeed = Mathf.Max(ballRotationSpeed - BallRotationAcceleration, -MaxBallRotationSpeed);
+            ballRotationSpeed = Mathf.Max(ballRotationSpeed - ballRotationAcceleration, -maxBallRotationSpeed);
         else if (ballRotationSpeed > 0f)
-            ballRotationSpeed = Mathf.Max(ballRotationSpeed - BallRotationAcceleration, 0f);
+            ballRotationSpeed = Mathf.Max(ballRotationSpeed - ballRotationAcceleration, 0f);
         else
-            ballRotationSpeed = Mathf.Min(ballRotationSpeed + BallRotationAcceleration, 0f);
+            ballRotationSpeed = Mathf.Min(ballRotationSpeed + ballRotationAcceleration, 0f);
 
         //ball movement logic
         ballMovementAcceleration = -(ballMovementSpeed - ballRotationSpeed) * grip;
