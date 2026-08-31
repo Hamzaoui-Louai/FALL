@@ -3,10 +3,10 @@
 ## Layout
 - Git repo root is `unity files/`; Unity project lives in `FALL/`. Run all Unity paths/ commands under `FALL/`, not repo root.
 - Pinned Unity version: `6000.3.22f1` (`FALL/ProjectSettings/ProjectVersion.txt`). Do not open with a different version.
-- URP 2D setup: `Assets/Settings/Renderer2D.asset` + `UniversalRP.asset`; only scene is `Assets/Scenes/SampleScene.unity`.
-- `Assets/Scripts/Player/` — `PlayerKit.cs` (`KitType` enum), `PlayerBehaviour.cs`, `PlayerControl.cs`, `PlayerAnimation.cs`, `PlayerLifecycle.cs` (death/respawn/checkpoint; exposes `KillPlayer()`, `OffscreenPlayer()`, `Respawn()`, `SetCheckpoint()`, `IsDead()`, `IsOffscreened()`).
+- URP 2D setup: `Assets/Settings/Renderer2D.asset` + `UniversalRP.asset`; scenes are `Assets/Scenes/Level 1.unity` and `Level 2.unity`.
+- `Assets/Scripts/Player/` — `PlayerKit.cs` (`KitType` enum: `No_kit`, `Fragile`, `Ice`, `Invincible`, `Shooter`, `Slime`, `Slowfalling`, `Speed`, `Time`), `PlayerBehaviour.cs`, `PlayerControl.cs`, `PlayerAnimation.cs`, `PlayerLifecycle.cs` (death/respawn/checkpoint; exposes `KillPlayer()`, `OffscreenPlayer()`, `Respawn()`, `SetCheckpoint()`, `IsDead()`, `IsOffscreened()`).
 - `Assets/Scripts/Level Environment/` — `Offscreener.cs` (rising kill-chaser; public `PauseOffscreener(int)`, `SetOffscreenerSpeed(float)`, `SetOffScreenerYPosition(float)` used for death/respawn), `CameraBehaviour.cs` (Y-follow clamped by upper/lower limits), `KitAnimator.cs` (plays a per-object serialized Animator state when the tagged `Player` triggers it), `KillPlayerOnCollision.cs` (kills the tagged `Player` on collision — used for spikes).
-- Player art: `Assets/Objects/Player/` has `No_kit_left.anim` / `No_kit_right.anim`, `Player_0.controller`, plus `Game Over Canvas.prefab` / `Player.png`. New powerup clips follow `<Powerup>_kit.anim`. Level art: `Assets/Objects/Level Environment/` — pixel tiles/spikes/checkpoint (`checkpoint_1.controller` + `Checkpoint.anim`/`Checkpoint_active.anim`), `Offscreener.png`, `left/right slide.png`, `tile.png`.
+- Player art: `Assets/Objects/Player/` has `No_kit_left.anim` / `No_kit_right.anim`, `Player_0.controller`, plus `Game Over Canvas.prefab` / `Player.png`. New powerup clips follow `<Powerup>_kit.anim`. Level art: `Assets/Objects/Level Environment/` — pixel tiles/spikes/checkpoint (`checkpoint_1.controller` + `Checkpoint.anim`/`Checkpoint_active.anim`), `Offscreener.png`, `left/right slide.png`, `tile.png`. Speed kit assets exist here too (`Speed_kit.anim`, `Speed_kit_active.anim`, `speed_kit_0.controller`, `speed_kit.png`) but are not yet wired into scripts.
 - Input System 1.20.0 installed; actions asset: `Assets/Settings/InputSystem_Actions.inputactions`.
 
 ## Git state
@@ -32,6 +32,7 @@
 - Enums for state: `PlayerDirection`, `KitType` instead of magic strings/ints.
 - `PlayerBehaviour` uses `rb.linearVelocity` (Unity 6 renamed `Rigidbody2D.velocity`).
 - `Offscreener`/`CameraBehaviour` resolve the player via `GameObject.Find("Player")` — the GameObject must stay named exactly `Player`; no inspector reference. `PlayerLifecycle` also resolves the offscreener via `GameObject.Find("Offscreener")`, so that GameObject must stay named exactly `Offscreener`.
+- `Offscreener.PauseOffscreener(int)` takes a *seconds* value but multiplies by 60 internally (`FrameRate` constant); the timer counts down in frames. `CameraBehaviour` runs in `Update` (not `FixedUpdate`), unlike every other script.
 - No abbreviations in variable/parameter names: `keyboard`, not `kb`; `behaviour`, not `bhv`.
 - Avoid `Debug.Log` in `FixedUpdate` (perf); none remain in shipped code (the whole `Assets/Scripts/` is `Debug.Log`-free). Keep it that way.
 - `Animator.speed` cannot be negative at runtime (recorder-mode only). For reverse animation duplicate states with `-1` speed in the Inspector or use `animator.Play(stateName, 0, normalizedTime)`.
