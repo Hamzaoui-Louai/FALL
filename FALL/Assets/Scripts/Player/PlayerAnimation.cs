@@ -7,11 +7,13 @@ public class PlayerAnimation : MonoBehaviour
 
     Animator animator;
     PlayerBehaviour behaviour;
+    PlayerKit kit;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
         behaviour = GetComponent<PlayerBehaviour>();
+        kit = GetComponent<PlayerKit>();
     }
 
     void FixedUpdate()
@@ -22,7 +24,10 @@ public class PlayerAnimation : MonoBehaviour
         animator.speed = animationSpeed;
 
         string directionSuffix = direction == PlayerDirection.Left ? "left" : "right";
-        string stateName = $"No_kit_{directionSuffix}";
+        KitType currentKit = kit.GetKit();
+        string stateName = currentKit == KitType.No_kit
+            ? $"No_kit_{directionSuffix}"
+            : $"{currentKit}_kit_{directionSuffix}";
         animator.Play(stateName);
     }
 }
