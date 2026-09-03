@@ -7,6 +7,7 @@ public class PlayerBehaviour : MonoBehaviour
     const float MaxBallRotationSpeed = 1f; 
     const float BallRotationAcceleration = 0.1f; // the ball takes 10 frames to reach max speed, which is 1/6 of a second at 60fps. 
     const float BallMovementSpeedToVelocityRatio = 8f;
+    const float SlowFallingSpeed = 4f;
 
     float ballRotationSpeed = 0f;
     float ballMovementSpeed = 0f;
@@ -62,5 +63,16 @@ public class PlayerBehaviour : MonoBehaviour
         ballMovementSpeed += ballMovementAcceleration;
         rb.linearVelocity = new Vector2(ballMovementSpeed * BallMovementSpeedToVelocityRatio, rb.linearVelocity.y);
 
+    }
+
+    void Update()
+    {
+        //falling logic
+        if (kit.GetKit() == KitType.Slowfalling)
+        {
+            float verticalVelocity = rb.linearVelocity.y;
+            if (verticalVelocity < -SlowFallingSpeed)
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, -SlowFallingSpeed);
+        }
     }
 }
