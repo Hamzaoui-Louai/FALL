@@ -1752,7 +1752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a18503e160691024790165db4196bf88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Offscreener
-  speed: 5
+  speed: 4
 --- !u!1 &185911891
 GameObject:
   m_ObjectHideFlags: 0

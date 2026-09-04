@@ -7,6 +7,7 @@ public class PlayerLifecycle : MonoBehaviour
 
     PlayerBehaviour behaviour;
     Offscreener offscreener;
+    PlayerKit kit;
     [SerializeField] GameObject gameOverCanvas;
 
     Vector3 currentCheckpoint;
@@ -16,6 +17,7 @@ public class PlayerLifecycle : MonoBehaviour
     void Awake()
     {
         behaviour = GetComponent<PlayerBehaviour>();
+        kit = GetComponent<PlayerKit>();
         offscreener = GameObject.Find("Offscreener").GetComponent<Offscreener>();
     }
 
@@ -29,8 +31,8 @@ public class PlayerLifecycle : MonoBehaviour
         isOffscreened = false;
         gameOverCanvas.SetActive(false);
         behaviour.SetGravity(5f);
-        offscreener.SetOffScreenerYPosition(OffscreenerOffset);
         behaviour.SetPosition(currentCheckpoint + new Vector3(0f, RespawnOffset, 0f));
+        offscreener.SetOffScreenerYPosition(behaviour.GetPosition().y + OffscreenerOffset);
     }
 
     public void SetCheckpoint(GameObject checkpoint)
@@ -46,10 +48,13 @@ public class PlayerLifecycle : MonoBehaviour
 
     public void KillPlayer()
     {
+        if (kit.GetKit() == KitType.Invincible) return;
         isDead = true;
         behaviour.Stop();
         behaviour.SetGravity(0f);
-        offscreener.SetOffScreenerYPosition(behaviour.GetPosition().y + OffscreenerOffset);
+        float newY = behaviour.GetPosition().y + OffscreenerOffset;
+        if (newY <= offscreener.GetOffScreenerYPosition())
+            offscreener.SetOffScreenerYPosition(newY);
     }
 
     public void OffscreenPlayer()

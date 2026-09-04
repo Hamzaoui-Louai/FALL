@@ -40,6 +40,11 @@ public class Offscreener : MonoBehaviour
         speed = newOffScreenerSpeed;
     }
 
+    public float GetOffScreenerYPosition()
+    {
+        return transform.position.y;
+    }
+
     public void SetOffScreenerYPosition(float newOffscreenerYPosition)
     {
         transform.position = new Vector2(0, newOffscreenerYPosition);
