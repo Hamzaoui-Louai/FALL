@@ -9,6 +9,11 @@ TagManager:
   - Speed
   - Slowfalling
   - Ice
+  - Invincible
+  - Fragile
+  - Shooter
+  - Slime
+  - Time
   layers:
   - Default
   - TransparentFX
